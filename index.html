@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Management System</title>
+</head>
+<body>
+<h1>Student Management System</h1>
+<p>Open Console (F12) to see the report - افتح الكونسول عشان تشوف التقرير</p>
+<pre id="output"></pre>
+
+<script>
+class Student {
+  constructor(id, name, grades, attendance) {
+    this.id = id;
+    this.name = name;
+    this.grades = grades;
+    this.attendance = attendance;
+  }
+
+  getAverage() {
+    let sum = this.grades.reduce((acc, grade) => acc + grade, 0);
+    return sum / this.grades.length;
+  }
+
+  getGrade(avg) {
+    if (avg >= 90) return "A";
+    else if (avg >= 80) return "B";
+    else if (avg >= 70) return "C";
+    else if (avg >= 60) return "D";
+    else if (avg >= 50) return "E";
+    else return "F";
+  }
+
+  getResult(avg) {
+    if (avg >= 50 && this.attendance >= 75) {
+      return "ناجح";
+    } else {
+      return "يحتاج مراجعة";
+    }
+  }
+}
+
+let studentsList = [
+  new Student(1, "Mariam", [85, 90, 88], 95),
+  new Student(2, "Ahmed", [45, 48, 42], 80),
+  new Student(3, "Sara", [70, 65, 72], 90),
+  new Student(4, "Omar", [40, 44, 46], 70)
+];
+
+console.log("=== تقرير كل الطلاب ===");
+studentsList.forEach(student => {
+  let avg = student.getAverage();
+  let grade = student.getGrade(avg);
+  let result = student.getResult(avg);
+  console.log(`الاسم: ${student.name} | المتوسط: ${avg.toFixed(2)} | التقدير: ${grade} | النتيجة: ${result}`);
+});
+
+let struggling = studentsList.filter(student => {
+  let avg = student.getAverage();
+  return avg >= 40 && avg <= 49;
+});
+
+console.log("=== الطلاب المتعثرون قبل الرأفة ===");
+console.log(struggling);
+
+let afterGrace = struggling.map(student => {
+  return student.getAverage() + 5;
+});
+
+console.log("=== متوسطات المتعثرين بعد +5 درجات رأفة ===");
+console.log(afterGrace);
+
+let totalAfter = afterGrace.reduce((acc, avg) => acc + avg, 0);
+let avgAfterGrace = afterGrace.length > 0 ? totalAfter / afterGrace.length : 0;
+
+console.log(`متوسط درجات الطلاب المتعثرين بعد التعديل: ${avgAfterGrace.toFixed(2)}`);
+
+// عرض نفس الكلام في الصفحة عشان يبان على الموبايل
+let out = "تقرير كل الطلاب:\n";
+studentsList.forEach(s => {
+  let avg = s.getAverage();
+  out += `${s.name} | المتوسط: ${avg.toFixed(2)} | التقدير: ${s.getGrade(avg)} | النتيجة: ${s.getResult(avg)}\n`;
+});
+out += "\nالمتعثرون بعد الرأفة (+5): " + afterGrace.join(", ") + "\n";
+out += `متوسط المتعثرين بعد التعديل: ${avgAfterGrace.toFixed(2)}`;
+document.getElementById("output").innerText = out;
+</script>
+</body>
+</html>
